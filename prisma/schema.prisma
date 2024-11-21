@@ -1,0 +1,262 @@
+// generator dbml {
+//   // provider   = "prisma-dbml-generator"
+//   output     = "../dbml"
+//   outputName = "schema.dbml"
+// }
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
+  username   String    @unique
+  password   String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now()) @updatedAt
+  last_seen  DateTime?
+  role       Role
+  omsets     Omset[]
+  orders     Order[]
+  products   Product[]
+
+  @@map("users")
+}
+
+model Order {
+  id                  String         @id @default(uuid())
+  created_at          DateTime       @default(now())
+  user_updated_by_id  Int
+  customer_id         String?
+  document_id         Int
+  payment_method      String
+  pricing_variant     String
+  total_amount        Int
+  status              orderStatus
+  discount_amount     Int
+  discount_percentage Int
+  tax_amount          Int
+  tax_percentage      Int            @default(11)
+  customer            Customer?      @relation(fields: [customer_id], references: [id], onDelete: SetNull)
+  document            Document       @relation(fields: [document_id], references: [id], onDelete: Cascade)
+  updated_by          User           @relation(fields: [user_updated_by_id], references: [id])
+  product_order       ProductOrder[]
+
+  @@index([customer_id], map: "orders_customer_id_fkey")
+  @@index([document_id], map: "orders_document_id_fkey")
+  @@index([user_updated_by_id], map: "orders_user_updated_by_id_fkey")
+  @@map("orders")
+}
+
+model Document {
+  id         Int           @id @default(autoincrement())
+  type       DocumentType? @default(invoice)
+  is_expired DateTime
+  order      Order[]
+
+  @@map("order_documents")
+}
+
+model ProductOrder {
+  id              String              @id @default(uuid())
+  product_id      Int
+  order_id        String
+  total_amount    Int
+  qty             Int                 @default(0)
+  category_orders OrderCategoryList[]
+  order           Order               @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  product         Product             @relation(fields: [product_id], references: [id])
+
+  @@index([order_id], map: "product_order_order_id_fkey")
+  @@index([product_id], map: "product_order_product_id_fkey")
+  @@map("product_order")
+}
+
+model OrderCategoryList {
+  id                   String                  @id @default(uuid())
+  category_id          Int
+  get_from_location_id String
+  total_stock_category Int
+  order_id             String
+  categories           CategoryStockAtLocation @relation(fields: [category_id], references: [id])
+  get_from_location    Location                @relation(fields: [get_from_location_id], references: [location_name])
+  orders               ProductOrder            @relation(fields: [order_id], references: [id], onDelete: Cascade)
+
+  @@index([category_id], map: "order_stock_lists_category_id_fkey")
+  @@index([get_from_location_id], map: "order_stock_lists_get_from_location_id_fkey")
+  @@index([order_id], map: "order_stock_lists_order_id_fkey")
+  @@map("order_stock_lists")
+}
+
+enum ProductOrigin {
+  production
+  purchase
+}
+
+model Product {
+  id               Int               @id @default(autoincrement())
+  name             String
+  amount_supplier  Int
+  supplier         String?
+  supplier_phone   String?
+  production_cost  BigInt
+  person_in_charge String?
+  amount           Int
+  stock            Int               @default(0)
+  created_at       DateTime?         @default(now())
+  updated_at       DateTime?         @updatedAt
+  created_by       Int?
+  origin           ProductOrigin     @default(purchase)
+  category         Category[]
+  price_variant    PriceVariant[]
+  location         ProductLocation[]
+  product_order    ProductOrder[]
+  created_by_user  User?             @relation(fields: [created_by], references: [id])
+
+  @@index([created_by], map: "products_created_by_fkey")
+  @@map("products")
+}
+
+model Category {
+  id         Int             @id @default(autoincrement())
+  name       String
+  product_id Int
+  product    Product         @relation(fields: [product_id], references: [id])
+  stock      CategoryStock[]
+
+  @@index([product_id], map: "category_product_id_fkey")
+  @@map("category")
+}
+
+model CategoryStock {
+  id                 Int                       @id @default(autoincrement())
+  category_id        Int
+  category           Category                  @relation(fields: [category_id], references: [id], onDelete: Cascade)
+  ctg_stock_location CategoryStockAtLocation[]
+
+  @@index([category_id], map: "ctg_stock_category_id_fkey")
+  @@map("ctg_stock")
+}
+
+model PriceVariant {
+  id          Int                      @id @default(autoincrement())
+  type        PriceTypes
+  price       Int
+  product_id  Int
+  category_id Int?
+  category    CategoryStockAtLocation? @relation(fields: [category_id], references: [id], onDelete: SetNull)
+  product     Product                  @relation(fields: [product_id], references: [id])
+
+  @@index([category_id], map: "price_variance_category_id_fkey")
+  @@index([product_id], map: "price_variance_product_id_fkey")
+  @@map("price_variance")
+}
+
+model CategoryStockAtLocation {
+  id            Int                 @id @default(autoincrement())
+  stock         Int                 @default(0)
+  price         Int                 @default(0)
+  ctg_stock     Int
+  location_name String
+  ctg           CategoryStock       @relation(fields: [ctg_stock], references: [id], onDelete: Cascade)
+  locations     Location            @relation(fields: [location_name], references: [location_name], onDelete: Cascade)
+  ordered       OrderCategoryList[]
+  price_variant PriceVariant[]
+
+  @@index([ctg_stock], map: "ctg_stock_based_location_ctg_stock_fkey")
+  @@index([location_name], map: "ctg_stock_based_location_location_name_fkey")
+  @@map("ctg_stock_based_location")
+}
+
+model ProductLocation {
+  id            String    @id @default(uuid())
+  location_name String?
+  product_code  Int
+  location      Location? @relation(fields: [location_name], references: [location_name], onDelete: Cascade)
+  product       Product   @relation(fields: [product_code], references: [id], onDelete: Cascade)
+
+  @@index([location_name], map: "product_location_location_name_fkey")
+  @@index([product_code], map: "product_location_product_code_fkey")
+  @@map("product_location")
+}
+
+model Location {
+  location_name String                    @id @unique
+  categories    CategoryStockAtLocation[]
+  orderStock    OrderCategoryList[]
+  product       ProductLocation[]
+
+  @@map("locations")
+}
+
+model TimelineOmset {
+  id            Int      @id
+  action_at     DateTime @default(now())
+  amount_insert Int
+  omset_id      Int
+  omsets        Omset    @relation(fields: [omset_id], references: [id])
+
+  @@index([omset_id], map: "timeline_omsets_omset_id_fkey")
+  @@map("timeline_omsets")
+}
+
+model Omset {
+  id                 Int             @id
+  amount             Int
+  updated_at         DateTime        @default(now())
+  updated_by_user_id Int
+  updated_by         User            @relation(fields: [updated_by_user_id], references: [id])
+  timeline           TimelineOmset[]
+
+  @@index([updated_by_user_id], map: "omsets_updated_by_user_id_fkey")
+  @@map("omsets")
+}
+
+model CompanyInformation {
+  id      Int    @id
+  name    String
+  address String
+  tel     String
+
+  @@map("company_information")
+}
+
+model Customer {
+  id        String  @id @default(uuid())
+  full_name String
+  company   String?
+  phone     String
+  email     String?
+  address   String?
+  orders    Order[]
+
+  @@map("customers")
+}
+
+enum orderStatus {
+  success
+  process
+}
+
+enum DocumentType {
+  invoice
+  shipping
+  receipt
+}
+
+enum PriceTypes {
+  eceran
+  project
+  toko
+}
+
+enum Role {
+  admin
+  user
+}
