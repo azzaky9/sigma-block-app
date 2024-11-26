@@ -9,6 +9,9 @@ declare module "@remix-run/node" {
 }
 
 export default defineConfig({
+  server: {
+    port: 3000
+  },
   plugins: [
     remix({
       future: {
@@ -16,9 +19,18 @@ export default defineConfig({
         v3_relativeSplatPath: true,
         v3_throwAbortReason: true,
         v3_singleFetch: true,
-        v3_lazyRouteDiscovery: true,
-      },
+        v3_lazyRouteDiscovery: true
+      }
     }),
-    tsconfigPaths(),
+    tsconfigPaths()
   ],
+  logLevel: "info",
+  ssr: {
+    noExternal: [
+      "@mui/*",
+      "material-react-table",
+      "@remix-run/dev",
+      "@remix-run/react"
+    ]
+  }
 });

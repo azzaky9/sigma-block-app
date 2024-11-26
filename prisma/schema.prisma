@@ -124,14 +124,27 @@ model Product {
 }
 
 model Category {
-  id         Int             @id @default(autoincrement())
-  name       String
-  product_id Int
-  product    Product         @relation(fields: [product_id], references: [id])
-  stock      CategoryStock[]
+  id           Int             @id @default(autoincrement())
+  name         String
+  product_id   Int
+  product      Product         @relation(fields: [product_id], references: [id])
+  stock        CategoryStock[]
+  sub_category SubCategory[]
 
   @@index([product_id], map: "category_product_id_fkey")
   @@map("category")
+}
+
+model SubCategory {
+  id             BigInt   @id @default(autoincrement())
+  name           String
+  quantity_stock Int
+  price_per_unit Int
+  category_id    Int
+  super_category Category @relation(fields: [category_id], references: [id])
+
+  @@index([category_id], map: "sub_category_category_id_fkey")
+  @@map("sub_category")
 }
 
 model CategoryStock {
