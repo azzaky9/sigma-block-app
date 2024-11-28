@@ -2,12 +2,10 @@ import * as React from "react";
 
 import Add from "@mui/icons-material/Add";
 import { useInputCategory } from "@/lib/store";
-import { Box, Button, useTheme } from "@mui/material";
-
-import NewProductForms from "@/components/Forms/NewProduct";
-import ReviewCategory from "@/components/Indicators/ReviewCategory";
-import BaseModalChildren from "@/components/Modal/BaseModalChildren";
 import { useSearchParams } from "@remix-run/react";
+import { Box, Button, useTheme } from "@mui/material";
+import BaseModalChildren from "@/components/Modal/BaseModalChildren";
+import CreateProductCategoryForm from "@/components/Forms/NewProduct";
 
 export const outerContainerSize = 800;
 
@@ -57,22 +55,10 @@ const CreateProduct = () => {
         onClose={handleClose}
         onOpen={handleFormOpen}
       >
-        <Box
-          sx={{
-            height: "430px",
-            width: "100%",
-            mt: 3,
-            gap: 5,
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr"
-          }}
-        >
-          <NewProductForms
-            defaultValues={formData}
-            closeFn={handleClose}
-          />
-          <ReviewCategory />
-        </Box>
+        <CreateProductCategoryForm
+          defaultValues={formData}
+          closeFn={handleClose}
+        />
         <Box
           sx={{ width: "100%", display: "flex", justifyContent: "end", mt: 2 }}
         >

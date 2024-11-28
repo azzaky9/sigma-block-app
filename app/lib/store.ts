@@ -1,11 +1,9 @@
-"use client";
-
 import * as z from "zod";
 import { create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import type { CategoryWithoutRelational } from "@/types/types";
 import { VTCreateProduct, orderedProduct } from "@/server/validation/base";
-import { Form as CustomerFormStruct } from "../@components/Forms/CreateOrderForm";
+import { Form as CustomerFormStruct } from "@/components/Forms/CreateOrderForm";
 import { TUpdateProduct } from "@/server/validation/product.validation";
 import { type UpdateOrderData } from "@/server/controller/product-order";
 // short repetitive set state function types
@@ -37,7 +35,9 @@ const useModalCategoryStore = create<ModalCategoryStore>()((set) => ({
   categories: [],
   setCategories: (value) => set((state) => ({ ...state, categories: value }))
 }));
+
 export type FormsCreateProduct = Omit<VTCreateProduct, "category">;
+
 export interface ProductForm
   extends Pick<ModalCategoryStore, "categories" | "setCategories"> {
   formData: FormsCreateProduct;
