@@ -5,7 +5,7 @@ import { useInputCategory } from "@/lib/store";
 import { useSearchParams } from "@remix-run/react";
 import { Box, Button, useTheme } from "@mui/material";
 import BaseModalChildren from "@/components/Modal/BaseModalChildren";
-import CreateProductCategoryForm from "@/components/Forms/NewProduct";
+import CreateProductCategoryForm from "@/components/Forms/CreateProductCategoryForm";
 
 export const outerContainerSize = 800;
 

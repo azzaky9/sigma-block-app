@@ -1,5 +1,3 @@
-"use client";
-
 import * as React from "react";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
@@ -31,7 +29,7 @@ export default function DisplayDestination(props: Props) {
         activeStep={1}
         orientation="vertical"
       >
-        {destinations.map((destination, index) => (
+        {destinations.map((destination) => (
           <Step key={destination.label}>
             <StepLabel icon={<LocationOn color="info" />}>
               {destination.label}

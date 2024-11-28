@@ -9,8 +9,9 @@ import {
   FormHelperText
 } from "@mui/material";
 import { FormsCreateProduct, useLocationStore } from "@/lib/store";
-import { TNestedItems } from "./CategoriesForm";
-import { NumericFormatCustom } from "./Input/NumericFormatCustom";
+import { TNestedItems } from "@/components/Forms/CategoriesForm";
+import { NumericFormatCustom } from "@/components/Forms/Input/NumericFormatCustom";
+import AutocompleteStaff from "@/components/Forms/Input/AutocompleteStaff";
 
 export default function ProductForm() {
   const { location: locations } = useLocationStore();
@@ -49,13 +50,16 @@ export default function ProductForm() {
           <FormControl
             variant="outlined"
             size="small"
+            error={touched.origin && Boolean(errors.origin)}
             sx={{ width: "100%" }}
           >
-            <InputLabel id="demo-simple-select-filled-label">
+            <InputLabel id="tipe-barang-label-identifier">
               Tipe Barang
             </InputLabel>
             <Select
+              labelId="tipe-barang-label-identifier"
               name="origin"
+              label="Tipe Barang"
               value={values.origin}
               onChange={handleChange}
             >
@@ -150,19 +154,7 @@ export default function ProductForm() {
               item
               xs={6}
             >
-              <TextField
-                fullWidth
-                required
-                disabled={isSubmitting}
-                name="supplier"
-                label="Penanggung Jawab"
-                value={values.supplier}
-                onChange={handleChange}
-                error={touched.supplier && !!errors.supplier}
-                helperText={errors.supplier}
-                variant="outlined"
-                size="small"
-              />
+              <AutocompleteStaff />
             </Grid>
           </>
         )}

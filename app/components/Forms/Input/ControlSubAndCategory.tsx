@@ -14,7 +14,7 @@ type Props = {
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
 };
 
-export default function ModifStock(props: Props) {
+export default function ControlSubAndCategory(props: Props) {
   const { itemAttribute, ...inputControl } = props;
 
   const suppressPropagation = (

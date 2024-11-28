@@ -4,7 +4,7 @@ import { FieldArray, useFormikContext } from "formik";
 
 import { Button } from "@mui/material";
 import { TreeItem } from "@mui/x-tree-view/TreeItem";
-import ModifStock from "@/components/Buttons/ModifStock";
+import ControlSubAndCategory from "@/components/Forms/Input/ControlSubAndCategory";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import AddIcon from "@mui/icons-material/Add";
@@ -12,7 +12,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { SimpleTreeView } from "@mui/x-tree-view/SimpleTreeView";
 
 import { FormsCreateProduct } from "@/lib/store";
-import LoaderButton from "../Buttons/LoaderButton";
+import LoaderButton from "@/components/Buttons/LoaderButton";
 
 const categoryValidation = z.object({
   id: z.string().min(1, "Wajib di isi"),
@@ -72,7 +72,7 @@ export default function CategoriesForm() {
                     sx={{ mt: 2 }}
                     key={index}
                     label={
-                      <ModifStock
+                      <ControlSubAndCategory
                         itemAttribute={cat}
                         name={`category.${index}`}
                         index={index}
@@ -93,7 +93,7 @@ export default function CategoriesForm() {
                                 sx={{ mt: 2 }}
                                 key={subIndex}
                                 label={
-                                  <ModifStock
+                                  <ControlSubAndCategory
                                     itemAttribute={subCat}
                                     name={`category.${index}.subCategory.${subIndex}`}
                                     index={subIndex}
