@@ -20,7 +20,7 @@ type Props = {
   defaultValues: FormsCreateProduct;
 };
 
-export default function NewProductForms({ closeFn }: Props) {
+export default function CreateProductCategoryForm({ closeFn }: Props) {
   const utils = trpc.useUtils();
 
   const { cleanup, categories, deletedRecord } = useInputCategory();
@@ -38,7 +38,7 @@ export default function NewProductForms({ closeFn }: Props) {
       stock: 0,
       location: "Storage",
       supplier: "",
-      origin: "purchase",
+      origin: "",
       category: []
     }),
     []

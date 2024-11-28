@@ -266,7 +266,7 @@ const useGlobalControlOrder = create<OrderStoreState & OrderActions>()(
         const categoryToUpdate = state.order[findIndex].categories[categoryId];
 
         if (findIndex !== -1) {
-          if (!!isEdit) {
+          if (isEdit) {
             state.order[findIndex].categories[categoryId].stock -= 1;
           }
           // state.order[findIndex].total_amount += categoryToUpdate.price * value;
@@ -281,7 +281,7 @@ const useGlobalControlOrder = create<OrderStoreState & OrderActions>()(
         );
 
         if (findIndex !== -1) {
-          if (!!isEdit) {
+          if (isEdit) {
             state.order[findIndex].categories[categoryId].stock += 1;
           }
           state.order[findIndex].categories[categoryId].order_quantity = value;

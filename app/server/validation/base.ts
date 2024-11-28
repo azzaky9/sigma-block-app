@@ -2,7 +2,7 @@ import * as z from "zod";
 
 const ROLE = ["admin", "user"] as const;
 const userRole = z.enum(ROLE);
-const ORIGIN_PRODUCT = ["production", "purchase"] as const;
+const ORIGIN_PRODUCT = ["production", "purchase", ""] as const;
 
 // VT for validation types
 const Admin = z.object({
@@ -27,15 +27,15 @@ export const Category = z.object({
 export const Categories = z.array(Category);
 const CreateProduct = z.object({
   id: z.number().optional(),
-  name: z.string().min(1, { message: "Nama barang wajib di isi" }),
+  name: z.string().min(1, { message: "wajib di isi" }),
   amountSupplier: z.string(),
   supplier: z.string().optional(),
   amount: z.string().optional().default("0"),
-  stock: z.number().min(1, { message: "Stock barang wajib di isi" }),
+  stock: z.number().min(1, { message: "wajib di isi" }),
   location: z
     .string()
     .min(1, { message: "Lokasi barang setidaknya di pilih 1" }),
-  origin: z.enum(ORIGIN_PRODUCT).default("purchase"),
+  origin: z.enum(ORIGIN_PRODUCT, { required_error: "wajib di isi" }),
   category: Categories
 });
 export const CategoryWithId = z.array(
