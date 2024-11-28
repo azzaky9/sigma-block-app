@@ -15,16 +15,19 @@ const LoaderButton: React.FC<LoaderButtonProps> = ({
   return (
     <Button
       disabled={isLoading}
+      endIcon={
+        isLoading ? (
+          <CircularProgress
+            size={16}
+            color="inherit"
+          />
+        ) : (
+          rest.endIcon
+        )
+      }
       {...rest}
     >
-      {isLoading ? (
-        <CircularProgress
-          size={16}
-          color="inherit"
-        />
-      ) : (
-        children
-      )}
+      {children}
     </Button>
   );
 };

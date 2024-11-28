@@ -1,5 +1,8 @@
-import { Context } from "../context";
-import { TDataUpdateCategory, incrementCategory } from "../model/category-model";
+import { Context } from "@/context";
+import {
+  TDataUpdateCategory,
+  incrementCategory
+} from "../model/category-model";
 import { getOrder } from "../model/order-model";
 import { VTCreateProduct } from "../validation/base";
 import { OrderCategoryList } from "@prisma/client";
@@ -19,36 +22,49 @@ type CategoryControllerOptions = {
 
 type TDataRestoreCategory = {
   orderId: string;
-  insertedData?: Pick<OrderCategoryList, "category_id" | "total_stock_category" | "get_from_location_id">[]
-}
+  insertedData?: Pick<
+    OrderCategoryList,
+    "category_id" | "total_stock_category" | "get_from_location_id"
+  >[];
+};
 
-
-export const restoreCategory = async ({ orderId, insertedData }: TDataRestoreCategory) => {
-  const recapStock: TDataUpdateCategory["data"] = []
-  const foundOrder = await getOrder({ id: orderId })
-  let location = ""
+export const restoreCategory = async ({
+  orderId,
+  insertedData
+}: TDataRestoreCategory) => {
+  const recapStock: TDataUpdateCategory["data"] = [];
+  const foundOrder = await getOrder({ id: orderId });
+  let location = "";
 
   if (foundOrder && !insertedData) {
-    const { product_order } = foundOrder
+    const { product_order } = foundOrder;
     product_order.forEach((product) => {
-      product.category_orders.forEach(({ category_id, total_stock_category, get_from_location_id }) => {
-        location = get_from_location_id
-        recapStock.push({ category_id: category_id, order_quantity: total_stock_category })
-      })
-    })
-
+      product.category_orders.forEach(
+        ({ category_id, total_stock_category, get_from_location_id }) => {
+          location = get_from_location_id;
+          recapStock.push({
+            category_id: category_id,
+            order_quantity: total_stock_category
+          });
+        }
+      );
+    });
   }
 
   if (insertedData) {
-    insertedData.forEach(({ category_id, total_stock_category, get_from_location_id }) => {
-      location = get_from_location_id
-      recapStock.push({ category_id: category_id, order_quantity: total_stock_category })
-    })
+    insertedData.forEach(
+      ({ category_id, total_stock_category, get_from_location_id }) => {
+        location = get_from_location_id;
+        recapStock.push({
+          category_id: category_id,
+          order_quantity: total_stock_category
+        });
+      }
+    );
   }
 
-  await incrementCategory({ data: recapStock, location })
-
-}
+  await incrementCategory({ data: recapStock, location });
+};
 
 export const category = (ctx: Context): CategoryControllerOptions => {
   return {

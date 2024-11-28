@@ -1,19 +1,14 @@
 import * as React from "react";
-
-// import { useDebounceValue } from "usehooks-ts";
-
-import Add from "@mui/icons-material/Add";
-import Remove from "@mui/icons-material/Remove";
 import NotInterested from "@mui/icons-material/NotInterested";
-// import { useInputCategory } from "@/lib/store";
-import { NumericFormatCustom } from "@/components/Forms/NewProduct";
-import { IconButton, InputAdornment, TextField, Tooltip } from "@mui/material";
+import { NumericFormatCustom } from "@/components/Forms/Input/NumericFormatCustom";
+import { IconButton, TextField, Tooltip } from "@mui/material";
 import { ReadableCategoryValidation } from "@/components/Forms/CategoriesForm";
 
 type Props = {
   itemAttribute: ReadableCategoryValidation;
   name: string;
   index: number;
+  isDisabled: boolean;
   removeItem: (id: number) => void;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onBlur: (e: React.FocusEvent<HTMLInputElement>) => void;
@@ -22,31 +17,46 @@ type Props = {
 export default function ModifStock(props: Props) {
   const { itemAttribute, ...inputControl } = props;
 
-  // const nameControl = `${inputControl}.${itemAttribute.name}`;
-  // console.log(nameControl);
-  // const increment = useInputCategory((state) => state.inc);
-  // const decrement = useInputCategory((state) => state.dec);
-  // const updatePrice = useInputCategory((state) => state.updatePrice);
-  // const [editablePrice, setEditablePrice] = React.useState(price);
-  // const handlePrice = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   setEditablePrice(Number(e.target.value));
-  // };
-  // const [debouncedPrice] = useDebounceValue(editablePrice, 400);
-  // React.useEffect(() => {
-  //   updatePrice(itemAttribute.id, debouncedPrice);
-  // }, [debouncedPrice]);
-
   const suppressPropagation = (
     e: React.KeyboardEvent<any> | React.MouseEvent<HTMLDivElement>
   ) => e.stopPropagation();
+
+  const handleNonNegative = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = Math.max(Number(e.target.value), 1);
+    console.log(newValue);
+    inputControl.onChange({
+      ...e,
+      target: {
+        ...e.target,
+        name: e.target.name,
+        value: newValue as any
+      }
+    });
+  };
+
+  const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const newValue = Number(value);
+    inputControl.onChange({
+      ...e,
+      target: {
+        ...e.target,
+        name,
+        value: newValue as any
+      }
+    });
+  };
 
   return (
     <div className="my-1 grid grid-cols-3 items-center  gap-5">
       <TextField
         type="text"
         size="small"
-        placeholder="Nama Barang"
+        label="Nama"
+        placeholder="e.g: Bata Merah"
         variant="outlined"
+        margin="dense"
+        disabled={inputControl.isDisabled}
         name={`${inputControl.name}.name`}
         value={itemAttribute.name}
         onChange={inputControl.onChange}
@@ -58,13 +68,15 @@ export default function ModifStock(props: Props) {
         label="Harga item"
         size="small"
         variant="outlined"
+        margin="dense"
         sx={{
           me: 2
         }}
-        placeholder="Contoh: Rp.2000"
+        placeholder="e.g: Rp.2000"
+        disabled={inputControl.isDisabled}
         name={`${inputControl.name}.price`}
         value={itemAttribute.price}
-        onChange={inputControl.onChange}
+        onChange={handleNumberChange}
         onBlur={inputControl.onBlur}
         onKeyDownCapture={suppressPropagation}
         onClickCapture={suppressPropagation}
@@ -75,35 +87,22 @@ export default function ModifStock(props: Props) {
         }}
       />
       <div className="flex items-center justify-center gap-1">
-        <TextField
-          label="Kuantitas"
-          size="small"
-          variant="outlined"
-          name={`${inputControl.name}.quantity`}
-          value={itemAttribute.quantity}
-          onChange={inputControl.onChange}
-          onBlur={inputControl.onBlur}
-          onKeyDownCapture={suppressPropagation}
-          onClickCapture={suppressPropagation}
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <IconButton onClick={() => console.log("add + 1")}>
-                    <Add sx={{ fontSize: 14, color: "primary.main" }} />
-                  </IconButton>
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  <IconButton onClick={() => console.log("decrease - 1")}>
-                    <Remove sx={{ fontSize: 14, color: "primary.main" }} />
-                  </IconButton>
-                </InputAdornment>
-              )
-            }
-          }}
-        />
+        <div className="flex gap-1">
+          <TextField
+            size="small"
+            label="Kuantitas"
+            type="number"
+            margin="dense"
+            disabled={inputControl.isDisabled}
+            name={`${inputControl.name}.quantity`}
+            value={itemAttribute.quantity}
+            onChange={handleNonNegative}
+            onBlur={inputControl.onBlur}
+            onKeyDownCapture={suppressPropagation}
+            onClickCapture={suppressPropagation}
+          />
+        </div>
+
         <Tooltip title="Hapus Kategori ini">
           <IconButton
             size="small"
