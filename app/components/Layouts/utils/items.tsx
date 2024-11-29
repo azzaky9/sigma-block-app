@@ -43,12 +43,6 @@ const items: Sidebars = [
   }
 ];
 
-const bottomItems: Sidebars = [
-  {
-    label: "Keluar",
-    directTo: "",
-    icon: <DoorBack />
-  }
-];
+const bottomItems: Sidebars = [];
 
 export { items, bottomItems, type SidebarItems };

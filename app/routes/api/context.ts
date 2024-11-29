@@ -1,16 +1,18 @@
 import { FetchCreateContextFnOptions } from "@trpc/server/adapters/fetch";
 import prisma from "@/database/db";
+import { getSession } from "@/utils/session";
 
 export const createContext = async ({
   resHeaders,
   req
 }: FetchCreateContextFnOptions) => {
+  const serverSession = await getSession(req.headers.get("cookie"));
+
   const session = {
     user: {
-      username: "admin",
-      id: 1,
-      role: "admin",
-      email: "admin@mail.com"
+      id: serverSession.get("userId"),
+      username: serverSession.get("username"),
+      role: serverSession.get("role")
     }
   };
 

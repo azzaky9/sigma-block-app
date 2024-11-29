@@ -38,7 +38,7 @@ const hydrate = () => {
     cssVariables: true,
     palette: {
       background: {
-        default: "rgb(250, 250, 251)"
+        default: "rgb(0, 0, 0)"
       },
       info: {
         main: "#007AFF"

@@ -1,7 +1,4 @@
-"use client";
-
 import { useMemo, useState } from "react";
-
 import moment from "moment";
 import { useBoolean } from "usehooks-ts";
 import { enqueueSnackbar } from "notistack";
@@ -14,9 +11,8 @@ import {
   useMaterialReactTable,
   MRT_ToggleFiltersButton
 } from "material-react-table";
-
 import { trpc } from "@/utils/trpc-client";
-import { useNavigate, useSearchParams } from "@remix-run/react";
+import { useSearchParams } from "@remix-run/react";
 import { grey } from "@mui/material/colors";
 import type { Products } from "@/types/types";
 import EditIcon from "@mui/icons-material/Edit";
@@ -43,15 +39,15 @@ import {
   Tooltip,
   Typography
 } from "@mui/material";
-
 import { usStates } from "@/components/Tables/dev/makeData";
 import { TextCapitalize } from "@/components/Tables/OrderTable";
 import TransferList from "@/components/Modal/TransferStock";
 import ListItemDialog from "@/components/Dialog/ListItemDialog";
 import StockCustomToolbar from "@/components/Actions/StockToolbar";
 import StockInOut from "@/components/Modal/StockInOut";
-import FindReplace from "@mui/icons-material/FindReplace";
+
 import Inventory from "@mui/icons-material/Inventory";
+import UpdateIcon from "@mui/icons-material/Update";
 
 const StockTable = () => {
   const currency = useCurrency();
@@ -211,18 +207,19 @@ const StockTable = () => {
       {
         accessorKey: "category",
         header: "Kategori",
+        size: 90,
         enableSorting: false,
         Cell: (value) => (
           <Tooltip title="Cek Kategori">
             <IconButton
-              color="secondary"
+              color="default"
               component="button"
               sx={{ width: "fit-content" }}
               onClick={() => handleOpenCategory(value.row.original.category)}
             >
               <Badge
                 badgeContent={value.row.original.category.length}
-                color="secondary"
+                color="info"
               >
                 <Inventory />
               </Badge>
@@ -269,9 +266,9 @@ const StockTable = () => {
             <Tooltip title="Monitoring Barang in\out">
               <IconButton
                 onClick={openMonitoring}
-                color="secondary"
+                color="default"
               >
-                <FindReplace />
+                <UpdateIcon />
               </IconButton>
             </Tooltip>
           </>
@@ -293,7 +290,6 @@ const StockTable = () => {
     columns,
     data: fetchedProducts,
     createDisplayMode: "modal",
-    // editDisplayMode: "modal",
     enableEditing: false,
     layoutMode: "grid-no-grow",
     enableFullScreenToggle: false,
@@ -307,7 +303,7 @@ const StockTable = () => {
     muiToolbarAlertBannerProps: isLoadingProductsError
       ? {
           color: "error",
-          children: "Error loading data"
+          children: "Gagal mengambil data barang"
         }
       : undefined,
     muiPaginationProps: {
@@ -318,7 +314,6 @@ const StockTable = () => {
     paginationDisplayMode: "pages",
     muiTableContainerProps: {
       sx: {
-        height: "600px",
         overflow: "auto",
         bgcolor: "white"
       }

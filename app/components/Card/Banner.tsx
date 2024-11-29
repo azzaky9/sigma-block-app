@@ -1,17 +1,18 @@
-"use client";
-
 import * as React from "react";
 import Box from "@mui/material/Box";
-import Card from "@mui/material/Card";
+import Card, { CardProps } from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
-import { ColorizeIcon } from "../custom/ColorizeIcon";
-import { Props as TPropsColorizeIcon } from "../custom/ColorizeIcon";
+import {
+  ColorizeIcon,
+  Props as TPropsColorizeIcon
+} from "@/components/custom/ColorizeIcon";
+
 import { Theme, SxProps } from "@mui/material";
 
-type Props = {
+interface Props extends CardProps {
   children: React.ReactNode;
-};
+}
 
 type TPropsBannerContent = {
   children: React.ReactNode;
@@ -27,7 +28,7 @@ export function BannerLabel({ label }: { label: string }) {
   return (
     <Typography
       sx={{ fontSize: 14, textTransform: "capitalize" }}
-      color='text.secondary'
+      color="text.secondary"
       gutterBottom
     >
       {label}
@@ -60,25 +61,24 @@ export function BannerContent({ children }: TPropsBannerContent) {
   return <Box>{children}</Box>;
 }
 
-export default function Banner({ children }: Props) {
+export default function Banner({ children, ...rest }: Props) {
   return (
-    <Box>
-      <Card
-        variant='outlined'
-        sx={{ borderRadius: 1 }}
+    <Card
+      variant="outlined"
+      sx={{ borderRadius: 1 }}
+      {...rest}
+    >
+      <CardContent
+        sx={{
+          minHeight: 130,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+          pb: 0
+        }}
       >
-        <CardContent
-          sx={{
-            minHeight: 130,
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-            pb: 0
-          }}
-        >
-          {children}
-        </CardContent>
-      </Card>
-    </Box>
+        {children}
+      </CardContent>
+    </Card>
   );
 }

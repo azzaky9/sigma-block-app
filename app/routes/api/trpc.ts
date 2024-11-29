@@ -95,8 +95,7 @@ const findOrCreateCustomer = async (
 };
 const getProduct = async (
   where: Prisma.ProductLocationWhereInput,
-  input: string,
-  includeCategoryLocationId: boolean
+  input: string
 ) => {
   const result = await prisma.productLocation.findMany({
     where: where,
@@ -195,7 +194,7 @@ export const appRouter = router({
     .mutation(async ({ ctx, input }) => {
       const session = ctx.session;
 
-      if (!session.user) {
+      if (!session) {
         throw new TRPCError({
           code: "UNAUTHORIZED",
           message: "Please Login when you want to update your profile"
@@ -325,7 +324,7 @@ export const appRouter = router({
 
       return cleaned;
     }),
-  getProducts: publicProcedure.input(String).query(async ({ ctx, input }) => {
+  getProducts: publicProcedure.input(String).query(async ({ input }) => {
     return await getProduct({ location_name: input }, input, false);
   }),
   deleteProductById: publicProcedure

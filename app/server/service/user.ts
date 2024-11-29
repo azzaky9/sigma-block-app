@@ -1,6 +1,6 @@
 import { VTAdminSchema, VTEditSchema } from "../validation/base";
 import { Context } from "@/routes/api/context";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 
 type BasedParams<T> = {
   data: T;
