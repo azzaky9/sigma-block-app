@@ -9,8 +9,7 @@ import { Link, useLocation } from "@remix-run/react";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import ListItemButton from "@mui/material/ListItemButton";
-import SpaceDashboard from "@mui/icons-material/SpaceDashboard";
-import { alpha, darken, Divider, Typography, useTheme } from "@mui/material";
+import { alpha, darken, Typography, useTheme } from "@mui/material";
 import ConfirmDialog from "@/components/Dialog/ConfirmDialog";
 import { bottomItems, items, SidebarItems } from "./utils/items";
 import Navbar from "./Navbar";
@@ -42,7 +41,7 @@ export default function MainSidebar({ children }: Props) {
       }}
       className="bg-slate-50"
     >
-      <Navbar drawerWidth={drawerWidth} />
+      <Navbar />
       <Drawer
         variant="permanent"
         sx={{

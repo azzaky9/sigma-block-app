@@ -55,7 +55,6 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-number-format": "^5.3.3",
-    "react-query": "^3.39.3",
     "remix-auth": "^4.0.0",
     "remix-auth-form": "^3.0.0",
     "superjson": "^2.2.1",

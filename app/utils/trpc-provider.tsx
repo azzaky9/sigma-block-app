@@ -1,8 +1,14 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import {
+  Hydrate,
+  QueryClient,
+  QueryClientProvider
+} from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { httpBatchLink, getFetch, loggerLink } from "@trpc/client";
 import { useState } from "react";
 import superjson from "superjson";
 import { trpc } from "./trpc-client";
+import { useDehydratedState } from "use-dehydrated-state";
 
 type Props = {
   children: React.ReactNode;
@@ -15,8 +21,8 @@ export const TrpcProvider = ({ children }: Props) => {
         defaultOptions: { queries: { staleTime: 1000 * 60 * 5 } }
       })
   );
+  const dehydratedState = useDehydratedState();
 
-  // const baseUrl = import.meta.env.VITE_PUBLIC_URL;
   const url = "http://localhost:3000/api/trpc";
 
   const [trpcClient] = useState(() =>
@@ -48,8 +54,10 @@ export const TrpcProvider = ({ children }: Props) => {
       queryClient={queryClient}
     >
       <QueryClientProvider client={queryClient}>
-        {children}
-        {/* <ReactQueryDevtools /> */}
+        <Hydrate state={dehydratedState}>
+          {children}
+          <ReactQueryDevtools initialIsOpen />
+        </Hydrate>
       </QueryClientProvider>
     </trpc.Provider>
   );

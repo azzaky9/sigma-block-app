@@ -34,7 +34,7 @@ const theme = createTheme({
   cssVariables: true,
   palette: {
     background: {
-      default: "rgb(0, 0, 0)"
+      default: "rgb(248 250 252)"
     },
     info: {
       main: "#007AFF"
